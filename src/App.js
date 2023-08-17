@@ -4,10 +4,11 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { useState } from "react";
 
-
+//filtering all the keysvalues for table column
 const TabCol = Object.keys(data[0]);
-// console.log(TabCol);
+//console.log(TabCol);
 
+//mapping all the keysvalues into table column
 const TabHead = () => {
   return TabCol.map((data, index) => {
     //console.log(data);
@@ -15,6 +16,8 @@ const TabHead = () => {
   });
 };
 
+
+//mapping all the data into table data
 const TabData = () => {
   return data.map((data) => {
     return (
@@ -27,11 +30,13 @@ const TabData = () => {
   });
 };
 
+//getting unique city names for dropdown
 const uniqueCity = [...new Set(data.map((item) => item.City))];
-console.log("unique city", uniqueCity);
+//console.log("unique city", uniqueCity);
 
+//getting unique district names for dropdown
 const uniqueDistrict = [...new Set(data.map((item) => item.District))];
-console.log("unique city", uniqueCity);
+//console.log("unique city", uniqueCity);
 
 function App() {
   const [selectedCity, setSelectedCity] = useState(null);
@@ -39,7 +44,7 @@ function App() {
   const [street, setStreet] = useState([]);
 
  
-
+// filtering the data based on city and district and mapping its values
   function ButtonClick() {
     const filteredData = data
       .filter((d) => {
@@ -54,6 +59,7 @@ function App() {
 
       console.log(filteredData);
 
+      // getting unique values in filtered data
       const uniqueFilteredData = [...new Set(filteredData)];
       setStreet(uniqueFilteredData)
       // console.log(uniqueFilteredData);
