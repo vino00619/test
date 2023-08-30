@@ -4,71 +4,63 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { useState } from "react";
 
-//filtering all the keysvalues for table column
-const TabCol = Object.keys(data[0]);
-//console.log(TabCol);
-
-//mapping all the keysvalues into table column
-const TabHead = () => {
-  return TabCol.map((data, index) => {
-    //console.log(data);
-    return <th key={index}>{data}</th>;
-  });
-};
-
-//mapping all the data into table data
-const TabData = () => {
-  return data.map((data) => {
-    return (
-      <tr>
-        {TabCol.map((i) => {
-          return <td>{data[i]}</td>;
-        })}
-      </tr>
-    );
-  });
-};
-
-//getting unique city names for dropdown
-const uniqueCity = [...new Set(data.map((item) => item.City))];
-//console.log("unique city", uniqueCity);
-
-//getting unique district names for dropdown
-const uniqueDistrict = [...new Set(data.map((item) => item.District))];
-//console.log("unique city", uniqueCity);
-
 function App() {
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [street, setStreet] = useState([]);
+  const [tableData, setTableData] = useState(data);
+
+  //filtering all the keysvalues for table column
+  const TabCol = Object.keys(data[0]);
+  //console.log(TabCol);
+
+  //mapping all the keysvalues into table column
+  const TabHead = () => {
+    return TabCol.map((data, index) => {
+      //console.log(data);
+      return <th key={index}>{data}</th>;
+    });
+  };
+
+  //mapping all the data into table data
+  const TabData = () => {
+    return tableData.map((data) => {
+      return (
+        <tr>
+          {TabCol.map((i) => {
+            return <td>{data[i]}</td>;
+          })}
+        </tr>
+      );
+    });
+  };
+
+  //getting unique city names for dropdown
+  const uniqueCity = [...new Set(data.map((item) => item.City))];
+  //console.log("unique city", uniqueCity);
+
+  //getting unique district names for dropdown
+  const uniqueDistrict = [...new Set(data.map((item) => item.District))];
+  //console.log("unique city", uniqueCity);
 
   // filtering the data based on city and district and mapping its values
-  function ButtonClick() {
-    const filteredData = data
-      .filter((d) => {
-        if (d.City === selectedCity) {
-          console.log("city", d);
-        }
-        return d.City.trim() === selectedCity.trim();
-      })
-      .filter((d) => {
-        if (d.District === selectedDistrict) {
-          console.log("dist", d);
-        }
-        return d.District.trim() === selectedDistrict.trim();
-      })
-      .map((d) => d.Street);
+  function filterTable() {
+    if (selectedCity && selectedDistrict) {
+      const filterResults = data
+        .filter((data) => data.City.trim() === selectedCity.trim())
+        .filter((data) => data.District.trim() === selectedDistrict.trim());
+      setTableData(filterResults);
+    }
+  }
 
-    console.log(filteredData);
-
-    // getting unique values in filtered data
-    const uniqueFilteredData = [...new Set(filteredData)];
-    setStreet(uniqueFilteredData);
-    // console.log(uniqueFilteredData);
+  function resetFilter() {
+    setSelectedCity(null);
+    setSelectedDistrict(null);
+    setTableData(data);
   }
 
   return (
     <div>
+      {/* -------------Header-------------- */}
       <nav
         class="navbar bg-dark border-bottom border-body"
         data-bs-theme="dark"
@@ -80,13 +72,7 @@ function App() {
         </div>
       </nav>
 
-      <table className="table">
-        <thead>
-          <tr>{TabHead()}</tr>
-        </thead>
-        <tbody>{TabData()}</tbody>
-      </table>
-
+      {/* -------------Buttons-------------- */}
       <div class="tableFunction">
         <div class="btn-group">
           <button
@@ -152,15 +138,24 @@ function App() {
           </ul>
         </div>
 
-        <button type="button" class="btn btn-success" onClick={ButtonClick}>
-          Success
+        <button type="button" class="btn btn-success" onClick={filterTable}>
+          Search
         </button>
-        <div style={{ margin: "auto", paddingLeft: "10px" }}>
-          {street.map((d) => {
-            return <p>{d}</p>;
-          })}
-        </div>
+        <button type="button" class="btn btn-secondary" onClick={resetFilter}>
+          Reset
+        </button>
       </div>
+
+      {/* -------------Table-------------- */}
+
+      <table className="table">
+        <thead>
+          <tr>{TabHead()}</tr>
+        </thead>
+        <tbody>{TabData()}</tbody>
+      </table>
+
+      {/* -------------Footer-------------- */}
       <nav
         class="navbar bg-dark border-bottom border-body"
         data-bs-theme="dark"
